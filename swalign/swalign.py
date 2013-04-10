@@ -59,7 +59,7 @@ def computeFMatrix(seq1, seq2, gap, similarityMatrixMap):
     for i in range(1, rows):
         for j in range(1, cols):
             mtch = fMatrix[i - 1, j - 1] + \
-                   similarityMatrixMap[seq1[i-1] , seq2[j-1]]
+                   similarityMatrixMap[seq1[i-1], seq2[j-1]]
             delete = fMatrix[i-1, j] + gap
             insert = fMatrix[i, j-1] + gap
             fMatrix[i, j] = max(0, mtch, delete, insert)
@@ -87,10 +87,6 @@ def computeFMatrix(seq1, seq2, gap, similarityMatrixMap):
     (aligned1, aligned2, startOfAlign1, startOfAlign2) = trackBack(pointers, seq1, seq2, gap, similarityMatrixMap, iOfMax, jOfMax)
     return ((aligned1, startOfAlign1, iOfMax), 
             (aligned2, startOfAlign2, jOfMax))
-    #a1 = Alignment(seq1, aligned1, startOfAlign1, iOfMax)
-    #a2 = Alignment(seq2, aligned2, startOfAlign2, jOfMax)
-    return a1, a2
-    #return (aligned1, aligned2, startOfAlign1, startOfAlign2, iOfMax, jOfMax)
 
 def formatSWAlignment(a1, a2):
     #    seq1, seq2, aligned1, aligned2, startOfAlign1, startOfAlign2, iOfMax, jOfMax):
