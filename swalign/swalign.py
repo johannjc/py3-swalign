@@ -2,7 +2,7 @@
 Created on May 9, 2011
 @author: vmandal
 '''
-# Code originally from
+# Code originally from 
 # http://www.codesofmylife.com/2011/05/13/smith-waterman-algorithm-for-local-alignment-in-python/
 from sys import *
 import itertools
@@ -16,7 +16,7 @@ def readBLOSUM50(fileName):
     #similarityMatrix = np.loadtxt(fileName, delimiter='\t')
     similarityMatrix = [x.strip().split() for x in open(fileName).readlines()]
     similarityMatrix = [[int(col) for col in row[1:]] for row in similarityMatrix[1:]]
-
+    similarityMatrixMap = dict()
     for i in range(len(t)):
         base1 = t[i]
         for j in range(len(t)):
@@ -52,7 +52,7 @@ def computeFMatrix(seq1, seq2, gap, similarityMatrixMap):
 
     fMatrix[:,0] = 0
     pointers[:,0] = 0
-
+        
     fMatrix[0,:] = 0
     pointers[0,:] = 0
 
@@ -85,7 +85,7 @@ def computeFMatrix(seq1, seq2, gap, similarityMatrixMap):
     startOfAlign2 = 1
 
     (aligned1, aligned2, startOfAlign1, startOfAlign2) = trackBack(pointers, seq1, seq2, gap, similarityMatrixMap, iOfMax, jOfMax)
-    return ((aligned1, startOfAlign1, iOfMax),
+    return ((aligned1, startOfAlign1, iOfMax), 
             (aligned2, startOfAlign2, jOfMax))
     #a1 = Alignment(seq1, aligned1, startOfAlign1, iOfMax)
     #a2 = Alignment(seq2, aligned2, startOfAlign2, jOfMax)
@@ -95,7 +95,7 @@ def computeFMatrix(seq1, seq2, gap, similarityMatrixMap):
 def formatSWAlignment(a1, a2):
     #    seq1, seq2, aligned1, aligned2, startOfAlign1, startOfAlign2, iOfMax, jOfMax):
     '''Some formatting for displaying alignment'''
-
+    
     numOfSpacesToAdd1 = {True: 0, False: a2.start - a1.start}[a1.start >= a2.start]
     numOfSpacesToAdd2 = {True: 0, False: a1.start - a2.start}[a2.start >= a1.start]
     aligned1 = ' ' * numOfSpacesToAdd1 + a1.sequence[:a1.start].decode('ascii') + a1.aligned + a1.sequence[a1.end:].decode('ascii')
@@ -112,7 +112,7 @@ def scoreSWAlignment(aligned1, aligned2):
     for cSeq1,cSeq2 in zip(aligned1.aligned, aligned2.aligned):
         if cSeq1 == cSeq2:
             score += 1
-
+            
     return score
 
 
@@ -120,7 +120,7 @@ def trackBack(pointers, seq1, seq2, gap, similarityMap, i, j):
     '''Tracks back to create the aligned sequence pair'''
     alignedSeq1 = []
     alignedSeq2 = []
-
+    
     while pointers[i, j] != -1 and i > 0 and j > 0:
         if pointers[i, j] == 1:
             alignedSeq1.append(seq1[i - 1])
@@ -146,10 +146,10 @@ if __name__ == "__main__":
 
     similarityMatrixMap = readBLOSUM50("../blosum50.txt")
     #similarityMatrixMap = readDNA()
-
+    
     seq1 = b'HEAGAWGHEE'
     seq2 = b'PAWHEAE'
-
+    
     alignment1, alignment2 = computeFMatrix(seq1, seq2, -6, similarityMatrixMap)
     print(alignment1)
     print(alignment2)
