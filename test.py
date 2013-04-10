@@ -31,14 +31,6 @@ def test():
     pa1, pa2 = swalign.computeFMatrix(seq1, seq2, -10, CSIM)
     ca1, ca2 = cswalign.local_align(seq1, seq2, -10, CSIM)
 
-    print('--pa1[0]--')
-    print(pa1[0])
-    #print(pa2)
-
-    print('--ca1[0]--')
-    print(ca1[0])
-    #print(ca2)
-
     # is it right?
     assert ca1[0] == result1
     assert ca2[0] == result2
