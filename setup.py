@@ -6,6 +6,7 @@ setup(
     cmdclass = {'build_ext': build_ext},
     ext_modules = [Extension('swalign.cswalign',
                              ['swalign/cswalign.pyx'])],
+    requires = ['cython (>=0.18)'],
 )
                              
                             

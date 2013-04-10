@@ -7,4 +7,7 @@ I copied the algorithm from: http://www.codesofmylife.com/2011/05/13/smith-water
 
 And then tried to make it faster. 
 
-At least on my laptop I was able to do about 300 ~160 bp alignments per second.
+At least on my laptop I was able to do about 300, ~160 bp alignments per second.
+
+Oh yes, it also only works correctly on python3.
+
