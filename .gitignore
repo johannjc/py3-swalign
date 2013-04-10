@@ -5,3 +5,4 @@ __pycache__/
 *.so
 /swalign/cswalign.c
 /swalign/cswalign.html
+*.prof
