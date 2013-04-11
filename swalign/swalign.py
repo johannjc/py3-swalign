@@ -35,7 +35,7 @@ def readDNA():
 
 Alignment = collections.namedtuple('Alignemnt', 'sequence aligned start end')
 
-def computeFMatrix(seq1, seq2, gap, similarityMatrixMap):
+def local_align(seq1, seq2, gap, similarityMatrixMap):
     '''This function creates alignment score matrix
     seq1 : reference sequence
     seq2 : other sequence
@@ -139,14 +139,13 @@ def trackBack(pointers, seq1, seq2, gap, similarityMap, i, j):
     return (bytes(alignedSeq1), bytes(alignedSeq2), i, j)
 
 if __name__ == "__main__":
-
-    similarityMatrixMap = readBLOSUM50("../blosum50.txt")
+    #similarityMatrixMap = readBLOSUM50("../blosum50.txt")
     #similarityMatrixMap = readDNA()
     
     seq1 = b'HEAGAWGHEE'
     seq2 = b'PAWHEAE'
     
-    alignment1, alignment2 = computeFMatrix(seq1, seq2, -6, similarityMatrixMap)
+    alignment1, alignment2 = local_align(seq1, seq2, -6, similarityMatrixMap)
     print(alignment1)
     print(alignment2)
     (alignedSeq1, alignedSeq2, alignPointer) = formatSWAlignment(alignment1, alignment2)

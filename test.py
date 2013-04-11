@@ -1,6 +1,8 @@
 #from swalign import cswalign
 from swalign import swalign
 from swalign import cswalign
+from swalign import formatSWAlignment, scoreSWAlignment
+
 import numpy as np
 import math
 import string
@@ -8,8 +10,6 @@ import string
 import pstats, cProfile
 
 import timeit
-seq1 = 'HEAGAWGEE'
-seq2 = 'PAWHEAE'
 
 seq1 = b'SSSVPSQKTYQGSYGFRLGFLHSGTAKSVTCTYSPALNKMFCQLAKTCPVQLWVDSTPPPGTRVRAMAIYKQSQHMTEVVRRCPHHERCSDSDGLAPPQHLIRVEGNLRVEYLDDRNTFRHSVVVPYEPPEVGSDCTTIHYNYMCNSSCMGGMNRRPILTIITLEDSSGNLLGRNSFEVRVCACPGRDRRTEEENL'
 
@@ -18,17 +18,11 @@ seq2 = b'SCAVPSTDDYAGKYGLQLDFQQNGTAKSVTCTYSPELNKLFCQLAKTCPLLVRVESPPPRGSILRATAVYK
 result1 = b'SSSVPSQKTYQGSYGFRLGFLHSGTAKSVTCTYSPALNKMFCQLAKTCPVQLWVDSTPPPGTRVRAMAIYKQSQHMTEVVRRCPHHERCSD-SDGLAPPQHLIRVEGNLRVEYLDDRNTFRHSVVVPYEPPEVGSDCTTIHYNYMCNSSCMGGMNRRPILTIITLEDSSGNLLGRNSFEVRVCACPGRDRRTEEEN'
 result2 = b'SCAVPSTDDYAGKYGLQLDFQQNGTAKSVTCTYSPELNKLFCQLAKTCPLLVRVESPPPRGSILRATAVYKKSEHVAEVVKRCPHHERSVEPGEDAAPPSHLMRVEGNLQAYYMEDVNSGRHSVCVPYEGPQVGTECTTVLYNYMCNSSCMGGMNRRPILTIITLETPQGLLLGRRCFEVRVCACPGRDRRTEEDN'
 
-SIM = swalign.readBLOSUM50('blosum50.txt')
 CSIM = cswalign.read_matrix('blosum50.txt')
-
-def test_matrix():
-    for pair in sim:
-        pair_score = sim[pair]
-        cscore = csim[ord(pair[0]), ord(pair[1])]
-        assert pair_score == cscore
+CDNA = cswalign.read_matrix('dna.txt')
 
 def test():
-    pa1, pa2 = swalign.computeFMatrix(seq1, seq2, -10, CSIM)
+    pa1, pa2 = swalign.local_align(seq1, seq2, -10, CSIM)
     ca1, ca2 = cswalign.local_align(seq1, seq2, -10, CSIM)
 
     # is it right?
@@ -44,12 +38,50 @@ def test():
     assert pa1[2] == ca1[2]
     assert pa2[2] == ca2[2]
 
+def test_formatting():
+    sseq1 = b'HEAGAWGEE'
+    sseq2 = b'PAWHEAE'
 
+    ca1, ca2 = cswalign.local_align(sseq1, sseq2, -6, CSIM)
+    formatted = formatSWAlignment(sseq1, sseq2, ca1, ca2)
+
+    assert formatted[0] == sseq1
+    assert formatted[1] == '    :: : '
+    assert formatted[2] == b'   ' + sseq2
+    
+    print('--- prot ---')
+    print(formatted[0].decode('ascii'))
+    print(formatted[1])
+    print(formatted[2].decode('ascii'))
+    
+def test_dna():
+    seq1 = b'GGTATACC'
+    seq2 = b'TATANC'
+    ca1, ca2 = cswalign.local_align(seq1, seq2, -6, CDNA)
+    pa1, pa2 = swalign.local_align(seq1, seq2, -6, CDNA)
+
+    assert ca1[0] == b'TATACC'
+    assert ca2[0] == b'TATANC'
+    assert pa1[0] == ca1[0]
+    assert pa2[0] == pa2[0]
+
+    assert ca1[1] == 2
+    assert ca2[1] == 0
+
+    assert ca1[2] == 8
+    assert ca2[2] == 6
+
+    formatted = formatSWAlignment(seq1, seq2, ca1, ca2)
+    print('--- dna ---')
+    print(formatted[0].decode('ascii'))
+    print(formatted[1])
+    print(formatted[2].decode('ascii'))
+    
 def time():
     setup = 'from __main__ import  swalign, cswalign, seq1, seq2, CSIM'
-    cmds = { 'py': 'swalign.computeFMatrix(seq1, seq2, -10, CSIM)',
-    'cy': 'cswalign.local_align(seq1, seq2, -10, CSIM)',
-            }
+    cmds = { 'py': 'swalign.local_align(seq1, seq2, -10, CSIM)',
+             'cy': 'cswalign.local_align(seq1, seq2, -10, CSIM)',
+             }
     seconds = 5
     for name in cmds:
         t0 = timeit.timeit(cmds[name], setup,  number=1)
@@ -68,4 +100,6 @@ def time():
 
 if __name__ == '__main__':
     test()
+    test_formatting()
+    test_dna()
     time()
