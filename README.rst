@@ -11,3 +11,6 @@ At least on my laptop I was able to do about 300, ~160 bp alignments per second.
 
 Oh yes, it also only works correctly on python3.
 
+
+-------
+This fork returns the maxScore as well - and fixed an issue with the setup.py to include the numpy include dirs

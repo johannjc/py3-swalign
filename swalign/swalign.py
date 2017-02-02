@@ -86,7 +86,7 @@ def local_align(seq1, seq2, gap, similarityMatrixMap):
 
     (aligned1, aligned2, startOfAlign1, startOfAlign2) = trackBack(pointers, seq1, seq2, gap, similarityMatrixMap, iOfMax, jOfMax)
     return ((aligned1, startOfAlign1, iOfMax), 
-            (aligned2, startOfAlign2, jOfMax))
+            (aligned2, startOfAlign2, jOfMax),maxScore)
 
 def formatSWAlignment(a1, a2):
     #    seq1, seq2, aligned1, aligned2, startOfAlign1, startOfAlign2, iOfMax, jOfMax):

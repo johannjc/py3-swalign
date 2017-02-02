@@ -151,4 +151,4 @@ cdef build_alignment_matrix(char * seqi,
     alignedi.reverse()
     alignedj.reverse()
     return ((bytes(alignedi), i, iOfMax),
-            (bytes(alignedj), j, jOfMax))
+            (bytes(alignedj), j, jOfMax), maxScore)
